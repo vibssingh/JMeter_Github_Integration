@@ -1,0 +1,30 @@
+name: JMeter Test Run
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    
+    - name: Run JMeter tests
+      run: mvn clean verify
+
+    - name: JMeter Test Report Generation
+      uses: actions/upload-artifact@v4
+      if: success() || failure()
+      with:
+          name: JMeter Report                                # Name of the folder
+          path: target/jmeter/reports/SOAP_Request           # Path to test results  
